@@ -3,6 +3,8 @@ package com.in28minutes.rest.webservices.restfullwebservices.user;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +38,7 @@ public class UserResource {
 	}
 	
 	@PostMapping(path = "/users")
-	public ResponseEntity<Object> createUser(@RequestBody User user) {
+	public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
 		//Store the newly saved user in a new local object
 		User savedUser = userService.save(user);
 		//in order to return the URI of new user, it is broken in into 3 parts
