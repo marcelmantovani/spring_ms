@@ -4,8 +4,10 @@ import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
-
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +31,17 @@ public class UserResource {
 	}
 	
 	@GetMapping("users/{id}")
-	public User retriveUser(@PathVariable int id) {
+	public Resource<User> retriveUser(@PathVariable int id) {
 		User user = userService.findOne(id);
 		if (user == null) {
 			throw new UserNotFoundException("id-"+id);
 		}
-		return user;
+		
+		Resource<User> resource = new Resource<User>(user);
+		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+		resource.add(linkTo.withRel("all-users"));
+		
+		return resource;
 	}
 	
 	@PostMapping(path = "/users")
