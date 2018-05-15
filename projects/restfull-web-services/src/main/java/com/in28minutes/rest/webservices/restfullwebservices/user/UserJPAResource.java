@@ -25,8 +25,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class UserJPAResource {
 
 	@Autowired
-	private UserDaoService userService;
-	@Autowired
 	private UserRepository userRepository;
 	
 	@GetMapping(path = "/jpa/users")
@@ -52,7 +50,7 @@ public class UserJPAResource {
 	@PostMapping(path = "/jpa/users")
 	public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
 		//Store the newly saved user in a new local object
-		User savedUser = userService.save(user);
+		User savedUser = userRepository.save(user);
 		//in order to return the URI of new user, it is broken in into 3 parts
 		//fromCurrentRequest() returns the /users part, as in the mapping
 		//.path("/{id}").buildAndExpand(savedUser.getId()) appends to /users the id of newly saved user
@@ -63,10 +61,7 @@ public class UserJPAResource {
 	
 	@DeleteMapping("/jpa/users/{id}")
 	public void deleteUser(@PathVariable int id) {
-		User user = userService.deleteById(id);
-		if (user == null) {
-			throw new UserNotFoundException("id-"+id);
-		}
+		userRepository.deleteById(id);
 	}
 
 	
