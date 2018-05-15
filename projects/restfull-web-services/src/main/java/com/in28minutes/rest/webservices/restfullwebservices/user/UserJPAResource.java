@@ -26,6 +26,8 @@ public class UserJPAResource {
 
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private PostRepository postRepository;
 	
 	@GetMapping(path = "/jpa/users")
 	public List<User> retrieveAllUsers(){
@@ -64,5 +66,38 @@ public class UserJPAResource {
 		userRepository.deleteById(id);
 	}
 
+	@GetMapping(path = "/jpa/users/{id}/posts")
+	public List<Post> retrieveAllUserPosts(@PathVariable int id){
+		Optional<User> userOptional = userRepository.findById(id);
+		
+		if (!userOptional.isPresent()) {
+			throw new UserNotFoundException("id-"+id);
+		}
+
+		return userOptional.get().getPosts(); 		
+	}	
+	
+	
+	@PostMapping(path = "/jpa/users/{id}/posts")
+	public ResponseEntity<Object> createPostOfUser(@PathVariable int id, @Valid @RequestBody Post post) {
+		Optional<User> userOptional = userRepository.findById(id);
+		
+		if (!userOptional.isPresent()) {
+			throw new UserNotFoundException("id-"+id);
+		}
+
+		User user = userOptional.get();
+		
+		post.setUser(user);
+		postRepository.save(post);
+		//Store the newly saved user in a new local object
+		
+		//in order to return the URI of new user, it is broken in into 3 parts
+		//fromCurrentRequest() returns the /users part, as in the mapping
+		//.path("/{id}").buildAndExpand(savedUser.getId()) appends to /users the id of newly saved user
+		//.toUri() converts into URI
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(post.getId()).toUri();
+		return ResponseEntity.created(location).build();
+	}
 	
 }
