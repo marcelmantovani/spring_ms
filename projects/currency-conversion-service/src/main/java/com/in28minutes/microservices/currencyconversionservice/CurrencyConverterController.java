@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,8 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class CurrencyConverterController {
+	@Autowired
+	private CurrencyExchangeServiceProxy proxy;
 	
 	@GetMapping("/currency-converter/from/{from}/to/{to}/amount/{amount}")
 	public CurrencyConverterBean convertCurrency(@PathVariable String from,  @PathVariable String to, @PathVariable BigDecimal amount) {
@@ -26,4 +29,15 @@ public class CurrencyConverterController {
 		return new CurrencyConverterBean(response.getId(), from, to, response.getConversionMultiple(), 
 				amount, amount.multiply(response.getConversionMultiple()), response.getPort());
 	}
+
+	@GetMapping("/currency-converter-feign/from/{from}/to/{to}/amount/{amount}")
+	public CurrencyConverterBean convertCurrencyFeign(@PathVariable String from,  @PathVariable String to, @PathVariable BigDecimal amount) {
+		
+		
+		CurrencyConverterBean response = proxy.retrieveExchangeValue(from, to);
+		
+		return new CurrencyConverterBean(response.getId(), from, to, response.getConversionMultiple(), 
+				amount, amount.multiply(response.getConversionMultiple()), response.getPort());
+	}
+
 }
