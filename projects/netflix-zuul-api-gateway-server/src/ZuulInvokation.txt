@@ -1,0 +1,7 @@
+If using the services url, zuul will not intercept the call.
+http://localhost:8000//currency-exchange/from/USD/to/BRL
+
+In order to use zuul
+http://localhost:8765/{application_name}/{service url}
+
+http://localhost:8765/currency-exchange-service/currency-exchange/from/USD/to/BRL
