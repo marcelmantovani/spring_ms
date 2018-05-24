@@ -2,3 +2,24 @@
 
 The github page [page](https://github.com/in28minutes/spring-microservices)
 
+## Zipkin instalation
+URL [https://zipkin.io/pages/quickstart]
+ run this command from a terminal (not window default) like gitbash or Cygwin
+ 
+ curl -sSL https://zipkin.io/quickstart.sh | bash -s
+ 
+ 
+##Updates to Step 39 - Running Zipkin on Windows
+Section 4, Lecture 96
+In the next step, we set up our Zipkin Server by downloading a jar. 
+
+Move to the next step if you are not on Windows!
+
+ONLY FOR WINDOWS USERS
+
+If you are on Windows, this is important for you:
+
+After you watch the next video, You can use the below commands to run Zipkin Server.
+
+set RABBIT_URI=amqp://localhost
+java -jar zipkin.jar
